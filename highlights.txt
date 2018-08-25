@@ -1,0 +1,3 @@
+The manuscript presents a method to calculate sample sizes for fMRI experiments
+The power analysis is based on the estimation of the mixture distribution of null and active peaks
+The methodology is validated with simulated and real data.

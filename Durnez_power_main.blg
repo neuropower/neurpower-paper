@@ -1,0 +1,54 @@
+This is BibTeX, Version 0.99d (TeX Live 2018)
+Capacity: max_strings=100000, hash_size=100000, hash_prime=85009
+The top-level auxiliary file: Durnez_power_main.aux
+The style file: apalike.bst
+Database file #1: bibliotheek.bib
+Repeated entry---line 1556 of file bibliotheek.bib
+ : @article{Efron2007
+ :                   ,
+I'm skipping whatever remains of this entry
+Warning--I didn't find a database entry for "PREPRINT"
+Warning--empty publisher in Friston2007
+Warning--empty publisher in Henson2007
+You've used 32 entries,
+            1935 wiz_defined-function locations,
+            695 strings with 9785 characters,
+and the built_in function-call counts, 14362 in all, are:
+= -- 1411
+> -- 661
+< -- 21
++ -- 227
+- -- 227
+* -- 1304
+:= -- 2463
+add.period$ -- 96
+call.type$ -- 32
+change.case$ -- 269
+chr.to.int$ -- 32
+cite$ -- 34
+duplicate$ -- 498
+empty$ -- 958
+format.name$ -- 277
+if$ -- 2787
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 34
+newline$ -- 162
+num.names$ -- 98
+pop$ -- 218
+preamble$ -- 1
+purify$ -- 271
+quote$ -- 0
+skip$ -- 389
+stack$ -- 0
+substring$ -- 1080
+swap$ -- 75
+text.length$ -- 5
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 188
+warning$ -- 2
+while$ -- 125
+width$ -- 0
+write$ -- 416
+(There was 1 error message)

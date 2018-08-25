@@ -1,0 +1,26 @@
+\section{Estimation of the significance threshold when controlling the false discovery rate. \label{App.FDR}}
+
+{\color{Cyan}
+To predict the significance threshold when controlling the false discovery rate in larger sample sizes, we first redefine the mixture distribution in Equation \ref{EQmixture} for a larger samplesize by replacing $\mu_1$ by $\mu_1^*$:
+
+\begin{equation} \label{EQmixturefuture}
+  f(z^u_j|\pi_1,\mu_1^*,\sigma_1,Z^u_j\geq u) = (1-\pi_1) f(z^u_j|H_0,Z^u_j\geq u) + \pi_1 f(z^u_j|H_a,\mu_1^*,\sigma_1,Z^u_j \geq u)
+\end{equation}
+
+Next, we can use the definition the local fdr as a Bayes posterior probability that a case is null given $z$, see Equation 2.6 and Equation 2.8 in \citet{efron2007}, and its conditional expectation:
+
+\begin{align}
+\text{fdr}(z) &= \frac{(1-\pi_1)f_0(z)}{f(z)}  \nonumber \\
+\text{Fdr}(Z) &= \int^z_{-\inf}\text{fdr}(Z)f(Z)dZ \bigg/ \int_{-\inf}^zf(Z) \label{EfronFDR}
+\end{align}
+
+with $\pi_1$ the proportion of active statistics, $f_0(z)$ the density function under $H_0$ and $f(z)$ the mixture density function.
+When plugging in the null density of peaks from Equation \ref{null} and the mixture density from Equation \ref{EQmixturefuture}, we obtain,
+
+\begin{align}
+    \text{fdr}(z^u) &= \frac{(1-\pi_1)f(z^u_j|H_0,Z^u_j\geq u)}{f(z^u_j|\pi_1,\mu_1^*,\sigma_1,Z^u_j\geq u)}  \nonumber  \\
+    \text{Fdr}(Z^u) &= \int^z_{-\inf}\text{fdr}(Z)f(Z^u|\pi_1,\mu_1^*,\sigma_1,Z^u\geq u)dZ^u \bigg/ \int_{-\inf}^zf(Z^u|\pi_1,\mu_1^*,\sigma_1,Z^u\geq u) \label{EfronFDRpeaks}
+\end{align}
+
+When numerically solving \ref{EfronFDRpeaks} for z when setting $\text{Fdr}(Z^u)=\alpha$, we obtain $E(z_\alpha|\pi_1,\mu_1^*,\sigma_1,u)$, the expected significance threshold when controlling the false discovery rate at level $\alpha$.
+}

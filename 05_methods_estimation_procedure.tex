@@ -1,0 +1,81 @@
+To calculate average peakwise power, it is essential to know the distribution of peak heights for truly active peaks $Z$ for peak heights (distribution under $H_a$).
+{\color{Cyan}To estimate this distribution, we use all peaks above a screening threshold $u$.  The inclusion of the screening threshold allows us to use parametric distributional results.  Therefore, let $\mathcal{J}^u \subset \mathcal{J}$ comprise the coordinate triplets of all local maxima above $u$.  Similarly we define $\mathcal{J}^u_1 \subset \mathcal{J}_1$ and $\mathcal{J}^u_0 \subset \mathcal{J}_0$ to comprise the coordinate triplets of all local maxima above $u$ corresponding to a voxel containing respectively true signal and no true signal.  Denote the test statistic for a peak above $u$ with coordinates $j$ as $Z^u_j$.
+}
+{\color{Cyan}For the choice of the screening threshold, we choose a value of $u=2.5$.  We have found this value high enough for the RFT assumptions to be met for peaks \citep{Durnez2014}, but low enough to have sufficient data points to estimate a mixture model.  We will further evaluate the choice of $u$ using simulations.}.
+
+Under the null, non-active peaks $Z^u_j$ with $j \in \mathcal{J}_0^u$, have a simple distribution, asymptotically following an exponential distribution with mean $u+1/u$ for screening threshold $u$ as $u$ goes to infinity (\citealp{Worsley2007}):
+
+\begin{equation}
+f(z^u_j|H_0,Z^u_j\geq u) \approx u \exp(-u(z_j^u-u)) \label{null}
+\end{equation}
+
+See \citet{Durnez2014} for a detailed derivation.  For $H_a$, while a shifted exponential might work well for small signals, we found a truncated normal distribution (truncated at screening threshold $u$) was better at describing the distribution of active peaks {\color{Cyan}$Z^u_j$ with $j \in \mathcal{J}_1^u$}:
+
+\begin{equation}
+f(z^u_j|H_a,\mu_1,\sigma_1,Z^u_j\geq u) = \frac{\frac{1}{\sigma_1}\varphi \left( \frac{z^u_j-\mu_1}{\sigma_1} \right) } {{1-\Phi}\left( \frac{u-\mu_1}{\sigma_1} \right)}, \label{alternative}
+\end{equation}
+
+where $\varphi$ and $\Phi$ are the density and cumulative distribution function of the standard normal distribution, respectively.
+
+The marginal distribution of peak heights {\color{Cyan}$Z^u_j$ ($j \in \mathcal{J}^u$)} can be written as the following mixture distribution:
+
+\begin{equation} \label{EQmixture}
+  f(z^u_j|\pi_1,\mu_1,\sigma_1,Z^u_j\geq u) = (1-\pi_1) f(z^u_j|H_0,Z^u_j\geq u) + \pi_1 f(z^u_j|H_a,\mu_1,\sigma_1,Z^u_j \geq u),
+\end{equation}
+
+
+where $\pi_1$ is the proportion of true positive peaks among all peaks above $u$.  Instead of estimating all parameters at once, we take a two-stage approach.  We first estimate $\pi_1$, in order to estimate $\mu_1$ and $\sigma_1$. We found this 2 stage approach more stable than estimating all 3 parameters jointly.
+
+There are a variety of estimation methods for $\pi_1$ that have been proposed \citep{Benjamini2000, Storey2003, Storey2001, Pounds2003, Pounds2004} all based on the observed distribution of the $p$-values. A comparison of the estimators for peak inference in fMRI data analysis is discussed in \citet{Durnez2014}, and here we use the preferred method from that work, the estimator of \citet{Pounds2003}.
+
+Once $\hat\pi_1$ is obtained for a dataset with sample size $n$, we estimate the remaining parameters, $\mu_1$ and $\sigma_1$ in Equation \ref{EQmixture} using maximum likelihood on the same data. We show how the method is not only applicable to one-sample or two-sample tests.  In the appendix  \ref{App.generalisation} we show how common models can be written in a form
+$$Z^u = \frac{b}{\widetilde{SE}(b)}\sqrt{n}$$
+
+where $b$ is  a random variable denoting the average experimental effect and $\widetilde{SE}(b) = SE(b)\sqrt{n}$.  This relative standard error attempts to remove sample size dependence.
+
+For a one-sample T-test $\widetilde{SE}(b)$ equals $\sigma$. The expected value of the peak height under the alternative before truncation is $$\mu_1=\frac{\mu}{\widetilde{SE}(b)}\sqrt{n}$$
+where $\mu=E(b)$ is the (non-null) mean in effect units.  We define $\delta=\mu/\widetilde{SE}(b)$ to be the unitless effect size; and for the one-sample case, this is exactly Cohen's d, $\delta=\mu/\sigma$.  For more details, we refer to the appendix.
+
+To estimate the truncated normal distribution using maximum likelihood, we use the Limited-memory Broyden-Fletcher-Goldfarb-Shanno with box constraints (L-BFGS-B) algorithm \citep{Byrd1995}.  The expected peak height under the null is $z=u+1/u$.  As the expected value of the alternative distribution should exceed this value, we set $\hat\mu_1=u+1/u$ as a lower limit in the optimization algorithm.  The standard deviation under the null is $1/u$ and we expect the variance under the alternative to be no less than that of the null, so we take $1/u$ as a conservative lower limit for $\hat\sigma_1$.  We draw a random pair of starting values for $\hat\mu_1$ from a range between $u+1/u$ and 10 and for $\hat\sigma_1$ from a range between $1/u$ and 10.
+
+
+For a new sample of size $n^*$, we model the distribution of truly activated peaks \textbf{before truncation} as $\mathcal{N}(\mu_1^*,\sigma_1)$ with $\mu_1^* = \delta\sqrt{n^*}$.
+Note that we assume that the variance of the distribution $\sigma_1^2$ remains constant for different sample sizes.
+%\todo[inline]{TN: We can leave this as is for now... but won't it make more sense to assume that there is some *true*, intrinsic variation in activation that we'd observe even with 1000 subjects?  But with 1000 subjects, the Z are going to go crazy (i.e. $\delta\sqrt{1000}$) and you'd assume that the variance scales with it, no?  Anyway, something to think about in revision... but we have no good way to test it I think (or do we?)}
+
+{\color{Cyan}
+To compute power, we use the normal distribution before truncation to expand the distribution below the threshold.
+For a given peak statistical threshold $z_\alpha$, the average peakwise power is computed as
+
+\begin{equation}
+1-\beta_{z_\alpha n^*} = P(Z_j \geq z_\alpha | j \in {\cal J}_1) = \Phi\left( \frac{z_\alpha-\mu_1^*}{\sigma_1} \right), \label{predpower}
+\end{equation}
+}
+
+the complementary cumulative distribution function of the alternative distribution from Equation \ref{alternative}. The statistical threshold $z_\alpha$ can either be uncorrected or corrected for multiple testing.
+
+\subsubsection{Computing the statistical threshold $z_\alpha$ \label{threshold}}
+We evaluate several strategies to select the statistical threshold $z_\alpha$:\begin{enumerate}
+\item UN: Level $\alpha=0.05$, uncorrected for multiple testing.
+\item FDR: Corrected to control the false discovery rate at level 0.05 with the method of \citet{Benjamini1995}.
+\item RFT: Corrected to control the familywise error rate at level 0.05 using a random field theory (RFT) correction \citep{Friston2007}.
+\end{enumerate}
+
+The null distribution of peaks (Equation \ref{null}) is used to compute uncorrected $p$-values for each peak, as well as to compute the thresholds for all of the above methods.  We stress that we are not encouraging the use of uncorrected thresholds (Method 1), but we need to verify the accuracy of our method in these basic settings.
+{\color{Cyan}
+We use the method proposed by \citet{Benjamini1995} to estimate the significance threshold.  However, the FDR method (2) is adaptive and depends on the data.  With higher power, the threshold will also increase.  To predict the threshold in larger sample sizes, we have derived the conditional expectation $\text{Fdr}(z)$ of the local false discovery rate given our estimates for $\pi_1$ as in \citet{efron2007}, $\mu_1$ and $\sigma_1$ (technical details in Appendix \ref{App.FDR}).  When setting $\text{Fdr}(z)=0.05$, we obtain $\hat z_\alpha$, the predicted significance threshold when controlling the false discovery rate at level $\alpha$.  Because of the conservative nature of the FDR method \citep{Benjamini1995}, we expect our predicted significance threshold to be lower than the obtained significance threshold, leading to overestimation of power.
+
+}
+
+Method 3 assumes that the search volume and the smoothness is the same in the pilot and new study.
+
+{\color{Cyan}
+\subsubsection{The use of a screening threshold $u$ \label{screening}}
+Due to a substantial number of questions based on a pre-publication preprint of this paper \citep{PREPRINT} regarding the use of a screening threshold $u$, we would like to further clarify the use of $u$ in the proposed procedure.  Even though the detailed information can be found throughout the paper, we summarise the use here in more informal language for clarity.
+
+The estimation procedure mainly consists of two steps: (1) estimating the (distribution) of the effect size in a pilot data set, using Equation \ref{EQmixture} and (2) estimating the power to detect those effect sizes in a future data set using Equation \ref{predpower}.
+
+In the first step, we use parametric results from Random Field Theory \citep{Worsley2007}, which requires the use of a screening threshold.  We model $H_a$ using a truncated normal distribution (truncation at $u$).  To this end, we estimate $\hat\pi_1$,  $\hat\mu_1$ and $\hat\sigma_1$ in the set of peaks above $u$.  Therefore, in our evaluations in the next sections, we compare our estimates with their true values above $u$.
+
+In the second step, we aim to compute power for all activation, above and below the screening threshold $u$.  Therefore, we eliminate the screening threshold from $H_a$ to represent a (non-truncated) normal distribution.  As such, in our evaluations, we compare the power estimates with their true values without applying a screening threshold $u$.
+}

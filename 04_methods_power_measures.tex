@@ -1,0 +1,28 @@
+First we consider a single one-sided univariate test: The null hypothesis $H_0$ is rejected in favor of the alternative hypothesis $H_a$ only when the test statistic $Z$ exceeds significance threshold $z_\alpha$; $z_\alpha$ is chosen to control the type I error rate, $\alpha=P(Z \geq z_\alpha|H_0)$, the power of this test is defined as $P(Z \geq z_\alpha | H_{a})$, which of course requires the distribution of $Z$ under $H_a$.
+
+In a 3 dimensional multiplicity context like voxelwise testing where many tests are performed simultaneously, several definitions for power exist \citep{Dudoit2003}. We will focus on average and familywise power.  For voxelwise inference, let $\mathcal{I}_1$ denote the set of coordinate triplets for voxels that are truly activated. The coordinate triplets in $\mathcal{I}_1$ are characterised by  the $x$, $y$ and $z$ coordinates in the 3 dimensional voxel space. Denote the test statistic for voxel with coordinates $i$ as  $Z_i$.  The average power is simply the arithmetic mean of power over non-null voxels:
+
+\begin{equation}
+(1-\beta_{z_\alpha}) = \frac{1}{| \mathcal{I}_1 |} \sum_{ i \in \mathcal{I}_1}P(Z_i \geq z_\alpha | H_{ai}) \label{average power}
+\end{equation}
+
+where $| \mathcal{I}_1 |$ is the number of truly activated voxels, and $H_{ai}$ is the alternative hypothesis at voxel  with coordinates $i$.  Assuming a homogeneous signal (i.e. the signal in the data is constant over non-null voxels), average power has the traditional interpretation of power: the probability of a true positive at one voxel.  The familywise error rate (FWER) is the probability of at least one type I error among multiple tests.  Its counterpart, familywise power, is defined as $P(Z_i \geq z_\alpha \text{ for some } i \in \mathcal{I}_1 )$, the probability of at least one true positive.
+
+We can similarly define average and familywise power for peakwise tests, and as with cluster definition, the identification of local maxima depends on a neighborhood.  The SPM\footnote{http://www.fil.ion.ucl.ac.uk/spm/} software (RRID:nif-0000-00305) uses 18-order neighborhood to define maxima, while FSL\footnote{www.fmrib.ox.ac.uk/fsl} (RRID:birnlex$\_$2067) uses 26-order neighborhood.  However, for sufficiently smooth data, these neighborhood definitions will converge.
+{\color{Cyan}\st{While peaks can be defined independently of an excursion or screening threshold, it can be sensible to exclude the lowest peaks that fall below $u$.  This excludes the highly variable peaks, and also is required if parametric distributional results are to be used. Let $\mathcal{J}$ comprise the  coordinate triplets of all local maxima above $u$. Denote the test statistic for peak  with coordinates $j$ as  $Z_j^u$.  Let $\mathcal{J}_1 \subset \mathcal{J}$ denote the set of  coordinate triplets for peaks above $u$ corresponding to a voxel containing true signal, while $\mathcal{J}_0 \subset \mathcal{J}$ denotes the set of  coordinate triplets for peaks above $u$ corresponding to a voxel containing no true signal. Average power is then defined as}
+
+\begin{equation}
+(1-\beta_{z_\alpha}^u) = \frac{1}{| \mathcal{J}_1 |}\sum_{j \in \mathcal{J}_1}P(Z_j^u \geq z_\alpha | H_{aj}) \label{peak power}
+\end{equation}
+
+\st{while familywise power is defined as $P(Z_j^u \geq z_\alpha \text{ for some } j \in \mathcal{J}_1 )$.}
+
+Let $\mathcal{J}$ comprise the  coordinate triplets of all local maxima. Denote the test statistic for a peak  with coordinates $j$ as  $Z_j$.  Let $\mathcal{J}_1 \subset \mathcal{J}$ denote the set of  coordinate triplets for peaks corresponding to a voxel containing true signal, while $\mathcal{J}_0 \subset \mathcal{J}$ denotes the set of  coordinate triplets for peaks corresponding to a voxel containing no true signal. Average power is then defined as
+
+\begin{equation}
+(1-\beta_{z_\alpha}) = \frac{1}{| \mathcal{J}_1 |}\sum_{j \in \mathcal{J}_1}P(Z_j \geq z_\alpha | H_{aj}) \label{peak power}
+\end{equation}
+
+while familywise power is defined as $P(Z_j \geq z_\alpha \text{ for some } j \in \mathcal{J}_1 )$.}
+
+The choice to control average power or familywise power is driven by the research hypothesis.  If a researcher is only interested in finding one brain region, then controlling the familywise power suffices, as only one significant peak in that region leads to the rejection of the null hypothesis for that brain region.  However, when task-related activation is expected in multiple brain regions, control of the familywise power may lead to false negative regions.  Within brain regions, the control of familywise power is most intuitive; between brain regions, we argue average power is more useful and in the remainder of this work, we focus on this measure of power.

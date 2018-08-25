@@ -1,0 +1,115 @@
+\section{Corrections for the mismatch between true and empirically derived $\pi_1$, effect size and power \label{App.corrections}}
+
+We first introduce some notation in Table \ref{notation}:\\
+
+\renewcommand{\arraystretch}{0.8}% Tighter
+\begin{table}[H]
+  \begin{center}
+    \begin{tabular}{ll}
+      \toprule
+    $J$ & Total number of peaks \\
+    \midrule
+    ${\cal J}_0^u$ & Indices of peaks arising in null regions above $u$ \\
+    ${\cal J}_1^u$ & Indices of peaks arising in non-null regions above $u$ \\
+    $\tilde{\cal J}_0^u$ & Indices of peaks arising in empirically derived null regions above $u$ \\
+    $\tilde{\cal J}_1^u$ & Indices of peaks arising in empirically derived non-null regions above $u$ \\
+     & $J_0^u = |{\cal J}_0^u|$, $J_1^u = |{\cal J}_1^u|$\\
+     & $\tilde{J}_0^u = |\tilde{\cal J}_0^u|$, $\tilde{J}_1^u = |\tilde{\cal J}_1^u|$\\
+     \midrule
+    $\pi_{00}^u$ & Proportion of $\tilde{\cal J}_0^u$ that is truly null \\
+    $\pi_{10}^u$ & Proportion of $\tilde{\cal J}_1^u$ that is truly null \\
+    \bottomrule
+    \end{tabular}
+    \caption{Notation for correction of population level estimators of $\pi_0$ and $\mu_1$. \label{notation}}
+\end{center}
+\end{table}
+
+\subsection{Correction of model estimates}
+
+As our reference level is analysed with family-wise error rate (FWER) control, we expect $\pi_{10}^u$ to be negligable and we set it to 0. $\pi_{00}^u$ can be estimated using the Beta-Uniform Model by \citet{Pounds2003}.  With these definitions, we can derive the number of peaks that are falsely classified in the FWER-analysis for the \textbf{Held-in pilot data} in table \ref{classFWE}:\\
+
+\begin{table}[H]
+  \begin{center}
+\begin{tabular}{l|cc|l}
+  \toprule
+  & Empirically derived & Empirically derived \\
+  & Null peaks & Active peaks \\
+  \midrule
+True null peaks & $\pi_{00}^u\tilde{J}_0^u$ & $\pi_{10}^u\tilde{J}_1^u =0$& $J_0^u$ \\
+  True active peaks & $(1-\pi_{00}^u)\tilde{J}_0^u$ & $(1-\pi_{10}^u)\tilde{J}_1^u = \tilde{J}_1^u$  & $J_1^u$ \\
+  \midrule
+  & $\tilde{J}_0^u$ & $\tilde{J}_1^u$ & \\
+  \bottomrule
+\end{tabular}
+\caption{Classification table of peaks after FWE thresholding in the held-in pilot data (with thresholding at $u$). \label{classFWE}}
+\end{center}
+\end{table}
+
+Thus, an uncontaminated estimate of $\pi_0$ can be found as:
+
+
+\begin{equation}
+\tilde{\pi}_0 = \frac{J_0^u}{J^u} = \frac{\hat\pi_{00}^u\tilde{J}_0^u}{J^u} \nonumber
+\end{equation}
+
+
+Similarly, bias-corrected versions of $\mu_1$ are possible.  First we note
+
+\begin{align}
+E(Z^u | {\cal J}_0^u) &= u + 1/u \nonumber \\
+E(Z^u | {\cal J}_1^u) &= \mu_1 \nonumber
+\end{align}
+
+where the conditional expectation indicates the set of peaks under consideration.  Now, similar to table \ref{classFWE}, we can decompose the expectation over observable sets:
+
+\begin{align}
+  E(Z^u|\tilde{\cal J}_0^u) &= \pi_{00}^u(u+1/u) + (1-\pi_{00}^u)E(Z^u | {\cal J}_1^u) \nonumber \\
+  E(Z^u|\tilde{\cal J}_1^u) &= E(Z^u | {\cal J}_1^u) \nonumber
+\end{align}
+
+Thus $\tilde\mu_1$ can be estimated:
+
+\begin{equation}
+  \tilde\mu_1 = \frac{(1-\pi_{00}^u)\tilde{J}_0^u}{J_1^u}\hat E(Z^u | \tilde{J}_1^u) + \frac{\tilde{J}_1^u}{J^u_1}\frac{E(Z^u | \tilde{\cal J}_0^u)-\hat\pi_{00}^u(u+1/u)}{1-\hat\pi_{00}^u}
+\end{equation}
+
+\subsection{Correction of power estimates}
+
+{\color{Cyan}For that for the power estimation procedure, we aim to estimate power without threshold $u$.  Therefore, we use the same notation as in \ref{notation}, but drop the $u$ to represent the peak indices without applying a threshold.  Similar to \ref{classFWE}, we can derive the number of peaks that are falsely classified in the FWER-analysis for the \textbf{Held-in study data} in table \ref{classFWEnothres}:\\
+
+\begin{table}[H]
+  \begin{center}
+\begin{tabular}{l|cc|l}
+  \toprule
+  & Empirically derived & Empirically derived \\
+  & Null peaks & Active peaks \\
+  \midrule
+True null peaks & $\pi_{00}^u\tilde{J}_0$ & $0$& $J_0$ \\
+  True active peaks & $(1-\pi_{00})\tilde{J}_0$ & $\tilde{J}_1$  & $J_1$ \\
+  \midrule
+  & $\tilde{J}_0$ & $\tilde{J}_1$ & \\
+  \bottomrule
+\end{tabular}
+\caption{Classification table of peaks after FWE thresholding in the held-in study data (without thresholding). \label{classFWEnothres}}
+\end{center}
+\end{table}
+
+We again estimate $\pi_00$, the proportion of active peaks among all empirically derived null peaks, $\tilde{J}_0$, using the Beta-Uniform Model.  Using table \ref{classFWEnothres}, an uncontaminated estimate of $1-\beta_{z_\alpha}$ can be found as:
+
+\begin{align}
+    (1-\tilde\beta_{z_\alpha}) &= \frac{|Z_j \geq z_\alpha|}{J_1}, \text{ for } j \in \tilde{\mathcal{J}_1} \nonumber \\
+                              &= \frac{|Z_j \geq z_\alpha|}{\tilde{J}_1 + (1-\pi_{00})\tilde{J}_0}, \text{ for } j \in \tilde{\mathcal{J}_1} \nonumber
+\end{align}
+
+Note that we assume that there is no overlap between $Z_j, \text{ for } j \in \tilde{\mathcal{J}_0}$ and $J_1$, which makes our uncontaminated estimate conservative.}
+
+% # how many false negatives?
+% if not np.sum(peaks['active'])==len(peaks):
+%     nonactid = np.where(peaks['active']==0)[0]
+%     pi1 = effectsize.Pi1()
+%     pi1.pvalues = peaks['pvals'][nonactid]
+%     pi1.estimate(starts=10)
+%     NoFalseNegatives = pi1.pi1*len(nonactid)
+
+
+%From the set up, one would assume you would set pi_0^A = 0.05 = alpha_FDR... are you instead saying you run P&M again?  Can you justify that further and explain why you didn't just assume 5%?

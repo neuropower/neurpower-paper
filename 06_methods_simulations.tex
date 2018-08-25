@@ -1,0 +1,45 @@
+Evaluations are done with 500 simulated power analyses.  For each realization, for a given sample size $n$ we generate $n$ statistical parametric maps, summarising evidence for activation.  These represent the average effect of the design in a first-level analysis for each subject, i.e. a three-dimensional map of subject-specific $b$-values.  We simulate $n$ $64 \times 64 \times 64$ volumes filled with independent standard Gaussian noise, setting the voxel size to $3 \times 3 \times 3$ mm. Images are smoothed with a 3D Gaussian kernel with a full-width at half maximum (FWHM) of $8$ mm.  After smoothing, images are rescaled to restore unit variance.  In each subject-specific $b$-map, we add true activation in 4 ball-shaped volumes that span either 2, 4, 6 or 8\% of the total brain volume.  We denote  ${\cal I}_1$ for the set of all voxel coordinates (not only peaks) where $H_a$ holds and ${\cal I}_0$ for null voxels where $H_0$ holds.
+
+Within these activation regions, the effect size takes a value of {\color{Cyan}0.5, 0.8, 1 or 1.2} units for all $n$ subjects.  {\color{Cyan}As such, we have 16 conditions: 4 activation sizes $\times$ 4 effect sizes.  In each analysis, the activation size and effect size is held constant for all subjects.} In a next step, a $z$ image is obtained by performing an ordinary least squares group analysis  with all subject-specific $b$-maps using FSL's second level FEAT tool. In this $z$ image, peaks are defined and only peaks above screening threshold $u$ are considered; we use $u=2.5$ and we show results for $u=2.0$ and $u=3.0$ in the supplementary materials. The null distribution from Equation \ref{null} thus gives peak $p$-values:
+
+\begin{equation}
+P(Z^u_j \geq z^u_j | H_0, Z^u_j \geq u) \approx \exp{(-u(z^u_j-u))} \label{pvalues}
+\end{equation}
+
+We use these simulations to study the performance of the procedure described in section \ref{ss.power}.
+
+\paragraph{Pilot data }We first simulate a statistical map from pilot data from a one-sample t-test on 15 subjects.  We compute from the $z$ image  all local maxima $z_j^u$ above $u$ with coordinate triplets $j$.  Let ${\cal J}_1^u \subset {\cal I}_1$ be the coordinates of truly active peaks, and ${\cal J}_0^u \subset {\cal I}_0$ be the coordinates of truly inactive peaks.
+
+A peak $z_j^u$ is truly active ($j \in {\cal J}_1^u$) if $j \in {\cal I}_1$ and truly inactive ($j \in {\cal J}_0^u$) if $j \subset {\cal I}_0$.  In these data, we estimate $\hat\pi_1$ using the procedure presented by \citet{Pounds2003} and then the alternative truncated normal distribution $N(\hat\mu_1,\hat\sigma_1)$ as described above.  With $\hat{\pi}_1$, $\hat\mu_1$, $\hat\sigma_1$, we are able to predict power of future studies in function of sample size $n^*$.
+
+For each pilot data set, we predict power for a new study with $n=15,...,35$ using equation \ref{predpower}.
+
+To validate the model estimation, we compare the estimated $\hat\pi_1$ with the true underlying $\pi_1$, which is obtained by calculating the percentage of peaks that are located in activated areas, $|\mathcal{J}_1^u|/|\mathcal{J}^u|$. The screening threshold has the goal to eliminate a large portion of null peaks.  As such $\pi_1$ will be higher than the voxelwise proportion of activation in the brain (i.e. 2, 4, 6 or 8 \%).  We also calculate the average peak effect size in truly active areas in the simulated data:
+
+\begin{equation}
+\widetilde{E}(Z_j^u|H_a) = \frac{1}{|{\cal J}_1^u|}\sum_{j\in {\cal J}_1^u} Z_j^u. \nonumber
+\end{equation}
+
+We compare $\widetilde{E}(Z^u_j|H_a)$ not with $\hat\mu_1$, but with the estimated expected peak height of the labeled active peaks, accounting for the screening threshold $u$:
+
+\begin{equation}
+ \widehat{E}(Z_j^u|H_a) = \hat{\mu}_1 + \hat{\sigma}_1 \hat\tau, \label{tau}
+\end{equation}
+
+where $\hat\mu_1$ and $\hat\sigma_1$ are estimated from the $n=15$ training data, and
+
+\begin{equation}
+ \hat\tau = \frac{\varphi \left( \frac{u-\hat\mu_1}{\hat\sigma_1} \right) } {{1-\Phi}\left( \frac{u-\hat\mu_1}{\hat\sigma_1} \right)}. \nonumber
+\end{equation}
+
+The mixture distribution is estimated and evaluated in 500 simulated pilot studies of sample size n.
+
+\paragraph{Study data} To validate the power predictions for the final experimental study, we simulate study data for {\color{Cyan}$n=15,...,60$} as described above.  {\color{Cyan}We now compute from the $z$ image  all local maxima $z_j$ \textbf{without threshold $u$} with coordinate triplets $j$, with $j \in {\cal J}_1$. We apply the significance thresholds described in section \ref{ss.est} to the identified peaks.}
+The predicted power $(1-\hat\beta_{z_\alpha})$ using the pilot data and Equation \ref{predpower} is compared to the empirically derived peakwise average power $(1-\tilde\beta^u_{z_\alpha})$ in the simulated images for which the underlying truth is known:
+
+\begin{equation}
+(1-\tilde\beta_{z_\alpha}) = \frac{|z_j^u > z_\alpha; j \in {\cal J}_1|}{|{\cal J}_1|} \nonumber
+\end{equation}
+
+
+Hence, $(1 - \hat\beta_{z_\alpha})$ for a sample size $n^*$ is estimated in each of 500 simulated pilot studies of sample size $n$ and the average over these simulations is compared to the average of the empirically derived power in 500 simulated studies of sample size $n^*$.
